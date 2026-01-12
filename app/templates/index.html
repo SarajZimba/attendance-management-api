@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Test</title>
+</head>
+<body>
+    <h1>Attendance Test Frontend</h1>
+
+    <h2>Check In</h2>
+    <input type="number" id="checkin_user_id" placeholder="User ID">
+    <button onclick="checkIn()">Check In</button>
+    <p id="checkin_result"></p>
+
+    <h2>Check Out</h2>
+    <input type="number" id="checkout_user_id" placeholder="User ID">
+    <button onclick="checkOut()">Check Out</button>
+    <p id="checkout_result"></p>
+
+    <script>
+        const baseURL = "http://127.0.0.1:5000/attendance";
+
+        async function checkIn() {
+            const userId = document.getElementById("checkin_user_id").value;
+            const response = await fetch(baseURL + "/check-in", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({user_id: parseInt(userId)})
+            });
+            const data = await response.json();
+            document.getElementById("checkin_result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function checkOut() {
+            const userId = document.getElementById("checkout_user_id").value;
+            const response = await fetch(baseURL + "/check-out", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({user_id: parseInt(userId)})
+            });
+            const data = await response.json();
+            document.getElementById("checkout_result").innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
