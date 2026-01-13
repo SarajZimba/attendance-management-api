@@ -4,6 +4,8 @@ from app.config.development import DevelopmentConfig
 from dotenv import load_dotenv
 from app.routes.attendance_routes import attendance_bp
 from app.routes.frontend_routes import frontend_bp
+# in main.py, inside create_app()
+from app.routes.user_routes import user_bp
 
 def create_app():
     load_dotenv()
@@ -16,6 +18,7 @@ def create_app():
     # Register Blueprints
     app.register_blueprint(attendance_bp, url_prefix="/attendance")
     app.register_blueprint(frontend_bp)
+    app.register_blueprint(user_bp, url_prefix="/users")
 
     return app
 

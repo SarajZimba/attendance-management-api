@@ -6,3 +6,7 @@ frontend_bp = Blueprint("frontend", __name__, template_folder="../templates")
 @frontend_bp.route("/")
 def index():
     return render_template("index.html")
+
+@frontend_bp.route("/admin")
+def admin_index():
+    return render_template("admin.html")
