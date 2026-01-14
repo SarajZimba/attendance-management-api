@@ -46,6 +46,12 @@ class AttendanceSession(db.Model):
         back_populates="attendance_sessions"
     )
 
+    is_late = db.Column(db.Boolean, default=False)
+
+    duration_minutes = db.Column(db.Integer)
+
+# ✅ New test column
+    test_column = db.Column(db.String(50), default="Test")
     def __repr__(self):
         return (
             f"<AttendanceSession id={self.id} "

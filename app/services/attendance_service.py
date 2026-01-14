@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, time
 from app.db import db
 from app.models.attendance_session import AttendanceSession
 from app.models.user import User
@@ -27,12 +27,18 @@ class AttendanceService:
         if active_session:
             raise AttendanceError("User already has an active session.")
 
+
+        # 2️⃣ Determine late check-in
+        now = datetime.utcnow()
+        late_cutoff = time(9, 30)
+        is_late = now.time() > late_cutoff
         # Create new session
         session = AttendanceSession(
             user_id=user_id,
             check_in_time=datetime.utcnow(),
             status="ACTIVE",
-            source=source
+            source=source,
+            is_late=is_late
         )
         db.session.add(session)
         db.session.commit()
@@ -58,6 +64,11 @@ class AttendanceService:
 
         # Close session
         active_session.check_out_time = datetime.utcnow()
+        # 4️⃣ Calculate duration (minutes)
+        duration = (
+            active_session.check_out_time - active_session.check_in_time
+        ).total_seconds() / 60
+        active_session.duration_minutes = int(duration)
         active_session.status = "CLOSED"
 
         db.session.commit()

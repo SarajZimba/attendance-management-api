@@ -18,6 +18,19 @@
   <tbody></tbody>
 </table>
 
+
+<h2>Daily Attendance Report</h2>
+Date: <input type="date" id="reportDate">
+<button id="fetchReport">Fetch Report</button>
+
+<table id="reportTable" border="1">
+  <thead>
+    <tr>
+      <th>User ID</th><th>Name</th><th>Check In</th><th>Check Out</th><th>Late</th><th>Duration (min)</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 <script>
 async function fetchUsers() {
   const res = await fetch("/users/");
@@ -48,5 +61,26 @@ document.getElementById("addUserForm").addEventListener("submit", async (e) => {
 });
 
 
+// -------------------- REPORT --------------------
+document.getElementById("fetchReport").addEventListener("click", async () => {
+  const date = document.getElementById("reportDate").value;
+  const url = date ? `/reports/daily?date=${date}` : "/reports/daily";
+  const res = await fetch(url);
+  const report = await res.json();
+
+  const tbody = document.querySelector("#reportTable tbody");
+  tbody.innerHTML = "";
+
+  report.forEach(r => {
+    tbody.innerHTML += `<tr>
+      <td>${r.user_id}</td>
+      <td>${r.user_name}</td>
+      <td>${r.check_in ? new Date(r.check_in).toLocaleTimeString() : "-"}</td>
+      <td>${r.check_out ? new Date(r.check_out).toLocaleTimeString() : "-"}</td>
+      <td>${r.is_late ? "Yes" : "No"}</td>
+      <td>${r.duration_minutes ?? "-"}</td>
+    </tr>`;
+  });
+});
 fetchUsers();
 </script>
